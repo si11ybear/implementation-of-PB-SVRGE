@@ -1,10 +1,12 @@
 # PB-SVRGE Algorithm Implementation
 
-This repository contains an implementation of the PB-SVRGE (PowerBall Stochastic Variance Reduced Gradient with Enhancement)[^1] algorithm on selected datasets. The code allows sweeping over one of the following hyperparameters:
+This repository contains an implementation of the PB-SVRGE (PowerBall Stochastic Variance Reduced Gradient with Enhancement)[^1] algorithm on selected datasets. The code allows sweeping over one of the following hyperparameters.
 
 - **`gamma`**: Sweeps over different values of the $\gamma$ parameter.
 - **`eta`**: Sweeps over different values of the learning rate ($\eta$).
 - **`b`**: Sweeps over different values of the batch size ($b$).
+
+After analyzing the effects of different hyperparameters, we compare the performance of PB-SVRGE with a classical optimization algorithm, ADAM[^2].
 
 ## Workflow
 
@@ -16,6 +18,8 @@ For each dataset and hyperparameter value, the main function performs the follow
 4. **Record Results**: Records the training history, final loss, and elapsed time.
 5. **Save Convergence Curve**: Saves the convergence curve of the objective gap as PNG files in the `./img/` directory.
 
+Detailed parameter settings are provided in the accompanying PDF file located in the current directory.
+
 ## How to Run
 
 First, download the required datasets and extract them into the `dataset` folder. The datasets can be found in the [PKU Disk](https://disk.pku.edu.cn/link/AAFE324EB4001A4619BB35CC7EC759017A) (link expires on 2025-07-15 22:29) or [LIBSVM Data Library](https://www.csie.ntu.edu.tw/~cjlin/libsvmtools/datasets/).
@@ -26,6 +30,12 @@ To sweep over a specific hyperparameter, use one of the following commands:
 python pbsvrge.py --para_type gamma
 python pbsvrge.py --para_type b
 python pbsvrge.py --para_type eta
+```
+
+To compare between PB-SVRGE and ADAM, use:
+
+```bash
+python pbsvrge.py --para_type use
 ```
 
 ## Requirements
@@ -41,4 +51,4 @@ python pbsvrge.py --para_type eta
 
 [^1]: Zhuang Yang. 2023. "Improved PowerBall stochastic optimization algorithms for large-scale machine learning." *Journal of Machine Learning Research*, 24(241), 1–29.
 
-
+[^2]: D. P. Kingma and J. Ba. 2014. "Adam: A Method for Stochastic Optimization." *arXiv preprint arXiv:1412.6980*.
