@@ -16,9 +16,9 @@ def logistic_loss(w, X, y, lam):
 def grad_logistic(X, y, w):
     z = X @ w
     prob = expit(-y * z)
-    if hasattr(X, 'multiply'):  # 稀疏矩阵
+    if hasattr(X, 'multiply'):  # sparse matrix
         grad = X.multiply(-(y * prob)[:, np.newaxis])
-        return np.mean(grad, axis=0).A1  # .A1 转为一维数组
+        return np.mean(grad, axis=0).A1  # .A1 to convert to 1D array
     else:
         grad = -(y * prob)[:, np.newaxis] * X
         return np.mean(grad, axis=0)
@@ -63,7 +63,7 @@ def pbsvrge(X, y, lam, w0, K, S, b, eta_list, gamma):
 
 
 # %%
-# 使用确定性梯度下降计算 w*
+# Use deterministic gradient descent to compute w*
 def adam_logistic(X, y, lam, w0, eta=0.01, beta1=0.9, beta2=0.999, eps=1e-8, max_iter=1000, tol=1e-8):
     w = w0.copy()
     m = np.zeros_like(w)
@@ -92,8 +92,8 @@ dataset_paths = {
     "ijcnn1": './dataset/ijcnn1',
     "news20": './dataset/news20.binary',
     "covtype": './dataset/covtype.libsvm.binary'
-    # "MNIST": './dataset/MNIST',  # 不包含
-    # "cifar": './dataset/cifar'   # 不包含
+    # "MNIST": './dataset/MNIST',  # Not included
+    # "cifar": './dataset/cifar'   # Not included
 }
 
 
@@ -114,7 +114,6 @@ def find_optimal():
 # %%
 import matplotlib.pyplot as plt
 def train(para_type):
-# if True:
     # para_type = 'gamma'  # 'eta', 'b', 'gamma'
     if para_type in ['eta', 'b']:
         selected_items = [(k, v) for k, v in dataset_paths.items() if k in ['a8a', 'ijcnn1']]
@@ -129,13 +128,13 @@ def train(para_type):
         b = 10
         K = int(np.ceil(3 * X.shape[0] / b))
         # S = 30
-        # 存储 sweep 结果
+        # Store sweep results
         results = []
 
         if data == "a8a" or data == "ijcnn1": eta = 0.01 
         else : eta = 0.1
         
-        # 为每个参数类型计时运行时间并输出        
+        # Time each parameter sweep and print output        
         if para_type == 'gamma':
             print(f"Training with gamma sweep for dataset: {data}")
             for gamma_val in [0.0, 0.2, 0.4, 0.6, 0.9, 1.0]:
@@ -177,7 +176,7 @@ def train(para_type):
         plt.title(rf'PB-SVRGE Convergence for Different {strs}')
         plt.grid(True)
         plt.savefig(f'./img/pbsvrge_{para_type}_{data}.png')
-        plt.show()
+        # plt.show() # blocks process
         plt.close()
         # break
 
@@ -186,12 +185,12 @@ import argparse
 import time
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="PB-SVRGE 参数选择")
+    parser = argparse.ArgumentParser(description="PB-SVRGE Parameter Sweeping")
     parser.add_argument('--para_type', type=str, required=True, choices=['gamma', 'eta', 'b'],
-                        help="参数类型: gamma, eta 或 b")
+                        help="Parameters: gamma, eta or b")
     args = parser.parse_args()
     w_star = {}
-    # 从pickle读取
+    # Load from pickle
     try:
         with open('w_star.pkl', 'rb') as f:
             w_star = pickle.load(f)
@@ -200,5 +199,4 @@ if __name__ == "__main__":
         with open('w_star.pkl', 'wb') as f:
             pickle.dump(w_star, f)
     train(args.para_type)
-
 
